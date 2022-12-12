@@ -1,11 +1,11 @@
 <?php
 
-namespace Assessment\Task2\Observer;
+namespace Assessment\CartDataToApiCrud\Observer;
 
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Checkout\Model\Session;
-use Assessment\Task2\Publisher\AddCart as Publisher;
+use Assessment\CartDataToApiCrud\Publisher\AddCart as Publisher;
 
 class AddCart implements ObserverInterface
 {

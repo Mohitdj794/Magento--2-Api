@@ -1,10 +1,10 @@
 <?php
 
-namespace Assessment\Task2\Consumer;
+namespace Assessment\CartDataToApiCrud\Consumer;
 
 use Magento\Framework\Serialize\SerializerInterface;
-use Assessment\Task2\Model\DataFactory as Model;
-use Assessment\Task2\Model\ResourceModel\Data as ResourceModel;
+use Assessment\CartDataToApiCrud\Model\DataFactory as Model;
+use Assessment\CartDataToApiCrud\Model\ResourceModel\Data as ResourceModel;
 
 class Addcart
 {
