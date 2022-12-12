@@ -8,19 +8,19 @@ interface GetDataInterface
     /**
      * GET for all data api
      *
-     * @return string
+     * @return \Assessment\CartDataToApiCrud\Api\Data\DataInterface[]
      */
 
-    public function getAllData() : string;
+    public function getAllData();
 
     /**
      * Get data by id
      *
      * @param int $id
-     * @return string
+     * @return \Assessment\CartDataToApiCrud\Api\Data\DataInterface
      */
 
-    public function getDataById(int $id) : string;
+    public function getDataById(int $id);
 
     /**
      * POST data by id
@@ -30,7 +30,7 @@ interface GetDataInterface
      * @return string
      */
 
-    public function edit($data) : string;
+    public function edit($data);
 
     /**
      * Get data by id
@@ -45,8 +45,8 @@ interface GetDataInterface
      * Get data by id
      *
      * @param int $id
-     * @return string
+     * @return \Assessment\CartDataToApiCrud\Api\Data\DataInterface[]
      */
 
-    public function pagination(int $id) : string;
+    public function pagination(int $id);
 }

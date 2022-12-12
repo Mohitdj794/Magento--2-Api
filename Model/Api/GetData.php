@@ -6,12 +6,13 @@
 namespace Assessment\CartDataToApiCrud\Model\Api;
 
 use Assessment\CartDataToApiCrud\Api\GetDataInterface;
+use Assessment\CartDataToApiCrud\Api\Data\DataInterfaceFactory;
 use Assessment\CartDataToApiCrud\Model\ResourceModel\CartData\CollectionFactory;
 use Assessment\CartDataToApiCrud\Model\ResourceModel\CartData;
 use Assessment\CartDataToApiCrud\Model\CartDataFactory;
-use Magento\Framework\DataObject;
+use Magento\Framework\Exception\LocalizedException;
 
-class GetData extends DataObject implements GetDataInterface
+class GetData implements GetDataInterface
 {
    /**
     * Collection variable
@@ -19,6 +20,25 @@ class GetData extends DataObject implements GetDataInterface
     * @var CollectionFactory
     */
     private $collectionFactory;
+   /**
+    * Collection variable
+    *
+    * @var DataInterfaceFactory
+    */
+    private $dataInterfaceFactory;
+
+   /**
+    * Collection variable
+    *
+    * @var DataInterfaceFactory
+    */
+    private $model;
+   /**
+    * Collection variable
+    *
+    * @var DataInterfaceFactory
+    */
+    private $resourceModel;
     
    /**
     * Cunstruct variable
@@ -26,48 +46,72 @@ class GetData extends DataObject implements GetDataInterface
     * @param CollectionFactory $collectionFactory
     * @param CartDataFactory $model
     * @param CartData $resourceModel
+    * @param DataInterfaceFactory $dataInterfaceFactory
     */
     public function __construct(
         CollectionFactory $collectionFactory,
         CartDataFactory $model,
         CartData $resourceModel,
+        DataInterfaceFactory $dataInterfaceFactory
     ) {
         $this->collectionFactory = $collectionFactory;
         $this->model = $model;
         $this->resourceModel = $resourceModel;
+        $this->dataInterfaceFactory = $dataInterfaceFactory;
     }
 
    /**
     * Collection variable
     *
-    * @return string
+    * @return \Assessment\CartDataToApiCrud\Api\Data\DataInterface[]
     */
-    public function getAllData() : string
+    public function getAllData()
     {
-         $collection = $this->collectionFactory->create();
-         return json_encode(['items' => $collection->getData()]);
+        try {
+            $collection = $this->collectionFactory->create();
+            $data = [];
+            foreach ($collection as $value) {
+                $dataInterface = $this->dataInterfaceFactory->create();
+                $dataInterface->setId($value->getId());
+                $dataInterface->setSku($value->getSku());
+                $dataInterface->setQuoteId($value->getQuoteId());
+                $dataInterface->setCustomerId($value->getCustomerId());
+                $dataInterface->setCreated($value->getCreated());
+                $data [] = $dataInterface;
+            }
+            return $data;
+        } catch (LocalizedException $e) {
+            throw $e->getMessage();
+        }
     }
 
    /**
     * Get Data by id
     *
     * @param int $id
-    * @return string
+    * @return \Assessment\CartDataToApiCrud\Api\Data\DataInterface
     */
 
-    public function getDataById(int $id) : string
+    public function getDataById(int $id)
     {
         try {
             if ($id == 0) {
                 return [];
             }
             if ($id) {
-                 $data = $this->model->create()->load($id)->getData();
-                 return json_encode(['item' => $data]);
+                $value = $this->model->create()->load($id);
+                $value->getData();
+                $dataInterface = $this->dataInterfaceFactory->create();
+                $dataInterface->setId($value->getId());
+                $dataInterface->setSku($value->getSku());
+                $dataInterface->setQuoteId($value->getQuoteId());
+                $dataInterface->setCustomerId($value->getCustomerId());
+                $dataInterface->setCreated($value->getCreated());
+                return $dataInterface;
             }
             return ['Id not present in the table'];
-        } catch (\Exception $e) {
-             return ['success' => false, 'message' => $e->getMessage()];
+        } catch (LocalizedException $e) {
+            throw ['success' => false, 'message' => $e->getMessage()];
         }
     }
 
@@ -85,8 +129,8 @@ class GetData extends DataObject implements GetDataInterface
                 $data->delete();
                 return "success";
             }
-        } catch (\Exception $e) {
-               return ['success' => false, 'message' => $e->getMessage()];
+        } catch (LocalizedException $e) {
+               throw ['success' => false, 'message' => $e->getMessage()];
         }
         return "false";
     }
@@ -118,8 +162,8 @@ class GetData extends DataObject implements GetDataInterface
                   return $info;
             }
                 
-        } catch (\Exception $e) {
-                  return $e->getMessage();
+        } catch (LocalizedException $e) {
+                  throw $e->getMessage();
         }
         return 'Id not present';
     }
@@ -128,16 +172,30 @@ class GetData extends DataObject implements GetDataInterface
      * Get data by id
      *
      * @param int $id
-     * @return string
+     * @return \Assessment\CartDataToApiCrud\Api\Data\DataInterface[]
      */
 
-    public function pagination(int $id) : string
+    public function pagination(int $id)
     {
         $pageId = $id;
         if ($id == null) {
             $pageId = 1;
         }
-        $collection = $this->collectionFactory->create()->setPageSize(5)->setCurPage($pageId);
-        return json_encode(['items'=>$collection->getData()]);
+        try {
+            $collection = $this->collectionFactory->create()->setPageSize(5)->setCurPage($pageId);
+            $data = [];
+            foreach ($collection as $value) {
+                $dataInterface = $this->dataInterfaceFactory->create();
+                $dataInterface->setId($value->getId());
+                $dataInterface->setSku($value->getSku());
+                $dataInterface->setQuoteId($value->getQuoteId());
+                $dataInterface->setCustomerId($value->getCustomerId());
+                $dataInterface->setCreated($value->getCreated());
+                array_push($data, $dataInterface);
+            }
+            return $data;
+        } catch (LocalizedException $e) {
+            throw $e->getMessage();
+        }
     }
 }
