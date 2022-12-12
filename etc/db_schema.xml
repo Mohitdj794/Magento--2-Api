@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="customers_cart_task">
+        <column xsi:type="int" name="id" identity="true" unsigned="true" nullable="false" comment="Id"/>
+        <column xsi:type="varchar" name="sku" nullable="false" length="255" comment="firstname"/>
+        <column xsi:type="int" name="customer_id" nullable="true" comment="lastname"/>
+        <column xsi:type="int" name="quotes_id" nullable="false" comment="email"/>
+        <column xsi:type="timestamp" name="created" on_update="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+</schema>
