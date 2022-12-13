@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/consumer.xsd">
     <consumer name="addtocart.consumer" queue="addtocart.queue" connection="amqp" 
-              handler="Assessment\Task2\Consumer\AddCart::consume"/>
+              handler="Assessment\CartDataToApiCrud\Consumer\AddCart::consume"/>
 </config>
 
 
