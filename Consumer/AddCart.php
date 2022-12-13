@@ -4,7 +4,7 @@ namespace Assessment\CartDataToApiCrud\Consumer;
 
 use Magento\Framework\Serialize\SerializerInterface;
 use Assessment\CartDataToApiCrud\Model\CartDataFactory as Model;
-use Assessment\CartDataToApiCrud\Model\ResourceModel\CarData as ResourceModel;
+use Assessment\CartDataToApiCrud\Model\ResourceModel\CartData as ResourceModel;
 
 class Addcart
 {
