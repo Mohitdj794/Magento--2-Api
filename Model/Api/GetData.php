@@ -39,21 +39,31 @@ class GetData implements GetDataInterface
     * @var DataInterfaceFactory
     */
     private $resourceModel;
+
+   /**
+    * Collection variable
+    *
+    * @var LoggerInterface
+    */
+    private $logger;
     
    /**
     * Cunstruct variable
     *
+    * @param LoggerInterface $logger
     * @param CollectionFactory $collectionFactory
     * @param CartDataFactory $model
     * @param CartData $resourceModel
     * @param DataInterfaceFactory $dataInterfaceFactory
     */
     public function __construct(
+        \Psr\Log\LoggerInterface $logger,
         CollectionFactory $collectionFactory,
         CartDataFactory $model,
         CartData $resourceModel,
         DataInterfaceFactory $dataInterfaceFactory
     ) {
+        $this->logger = $logger;
         $this->collectionFactory = $collectionFactory;
         $this->model = $model;
         $this->resourceModel = $resourceModel;
@@ -81,7 +91,8 @@ class GetData implements GetDataInterface
             }
             return $data;
         } catch (LocalizedException $e) {
-            throw $e->getMessage();
+            $this->logger->info($e->getMessage());
+            return ["message" => $e->getMessage()];
         }
     }
 
@@ -95,12 +106,12 @@ class GetData implements GetDataInterface
     public function getDataById(int $id)
     {
         try {
-            if ($id == 0) {
+            if ($id == null || $id == 0) {
                 return [];
             }
-            if ($id) {
-                $value = $this->model->create()->load($id);
-                $value->getData();
+            $value = $this->model->create();
+            $this->resourceModel->load($value, $id, 'id');
+            if ($value->getData()) {
                 $dataInterface = $this->dataInterfaceFactory->create();
                 $dataInterface->setId($value->getId());
                 $dataInterface->setSku($value->getSku());
@@ -111,7 +122,8 @@ class GetData implements GetDataInterface
             }
             return ['Id not present in the table'];
         } catch (LocalizedException $e) {
-            throw ['success' => false, 'message' => $e->getMessage()];
+            $this->logger->info($e->getMessage());
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 
@@ -130,7 +142,7 @@ class GetData implements GetDataInterface
                 return "success";
             }
         } catch (LocalizedException $e) {
-               throw ['success' => false, 'message' => $e->getMessage()];
+               return ['success' => false, 'message' => $e->getMessage()];
         }
         return "false";
     }
@@ -145,12 +157,14 @@ class GetData implements GetDataInterface
     {
         $insertData = $this->model->create();
         try {
+            $arrField = ['id', 'sku', 'customer_id', 'quote_id', 'created'];
                $id =$data['id'];
                $insertData->load($id);
-               $data = array_slice($data, 1);
             if (!empty($data)) {
                 foreach ($data as $key => $value) {
+                    if (in_array($key, $arrField)) {
                         $insertData->setData($key, $value);
+                    }
                 }
                 $info = 'new Record Created';
                 if ($insertData->getId()) {
@@ -161,9 +175,10 @@ class GetData implements GetDataInterface
                
                   return $info;
             }
-                
+            
         } catch (LocalizedException $e) {
-                  throw $e->getMessage();
+            $this->logger->info($e->getMessage());
+            return ["message" => $e->getMessage()];
         }
         return 'Id not present';
     }

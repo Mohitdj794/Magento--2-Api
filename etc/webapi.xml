@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
-    <route url="/V1/get/data/cart/" method="GET">
+    <route url="/V1/admin/get/data/cart/" method="GET">
         <service class="Assessment\CartDataToApiCrud\Api\GetDataInterface" method="getAllData" />
         <resources>
-            <resource ref="anonymous" />
+            <resource ref="Assessment_CartDataToApiCrud::custom_api"/>
         </resources>
     </route>
       <route url="/V1/get/data/cart/by/id/:id" method="GET">
         <service class="Assessment\CartDataToApiCrud\Api\GetDataInterface" method="getDataById" />
         <resources>
-            <resource ref="anonymous" />
+            <resource ref="anonymous"/>
         </resources>
     </route>
      <route url="/V1/get/data/cart/delete/id/:id" method="GET">
@@ -24,10 +24,10 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
-     <route url="/V1/set/cart/data/pagination/:id" method="GET">
+     <route url="/V1/customer/cart/data/pagination/:id" method="GET">
         <service class="Assessment\CartDataToApiCrud\Api\GetDataInterface" method="pagination"/>
         <resources>
-            <resource ref="anonymous"/>
+            <resource ref="self"/>
         </resources>
     </route>
 </routes>

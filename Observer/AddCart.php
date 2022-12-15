@@ -9,6 +9,11 @@ use Assessment\CartDataToApiCrud\Publisher\AddCart as Publisher;
 
 class AddCart implements ObserverInterface
 {
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
     /**
      * @var Session
      */
@@ -16,14 +21,17 @@ class AddCart implements ObserverInterface
 
     /**
      *
+     * @param LoggerInterface $logger
      * @param Session $checkout
      * @param Publisher $publisher
      */
     public function __construct(
+        \Psr\Log\LoggerInterface $logger,
         Session $checkout,
         Publisher $publisher
     ) {
        
+        $this->logger = $logger;
         $this->checkout=$checkout;
         $this->publisher=$publisher;
     }
@@ -39,11 +47,13 @@ class AddCart implements ObserverInterface
             $sku = $observer->getProduct()->getSku();
             $session=$this->checkout->getQuote();
             $customer_id=$session->getCustomerId();
-            $quote_id=$session->getId();
+            $quote_id=$this->checkout->getQuote()->getId();
+            $this->logger->info($quote_id);
             $data=['sku'=>$sku,
                     'customer_id'=>$customer_id,
                     'quotes_id'=>$quote_id
                   ];
+
             $this->publisher->publish($data);
     }
 }
