@@ -3,4 +3,4 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/consumer.xsd">
     <consumer name="addtocart.consumer" queue="addtocart.queue" connection="amqp" 
               handler="Assessment\CartDataToApiCrud\Consumer\AddCart::consume"/>
-</config>
+</config>   
